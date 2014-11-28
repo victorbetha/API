@@ -2,24 +2,36 @@ from __future__ import unicode_literals
 from bicefalo.authentication import OAuth20Authentication
 from bicefalo.utils import CustomResource
 from tastypie.authorization import DjangoAuthorization
-from models import Categoria, Coleccion
+from piezas.models import Categoria as Categorias, Coleccion as Colecciones
+from tastypie.resources import ALL
 
 class Categoria(CustomResource):
     class Meta:
-        queryset = Categoria.objects.all()
+        queryset = Categorias.objects.all()
         resource_name='categorias'
-        fields = ['nombre']
         allowed_methods=['get','post','put']
+        always_return_data = False
         authorization = DjangoAuthorization()
         authentication = OAuth20Authentication()
-
+        filtering={'nombre':ALL,}
+        
+    def get_object_list(self, request):
+        if request.GET:
+            id = request.GET.get('coleccion')
+            if id:
+                return Colecciones.objects.get(id=id).categorias.distinct()
+        return super(Categoria, self).get_object_list(request)
+    
 class Coleccion(CustomResource):
     class Meta:
-        queryset = Coleccion.objects.all()
+        queryset = Colecciones.objects.all()
         resource_name='colecciones'
-        fields = ['nombre']
         allowed_methods=['get','post','put']
+        always_return_data = False
         authorization = DjangoAuthorization()
         authentication = OAuth20Authentication()
+        filtering={'nombre':ALL,}
+    
 
-enabled_resources=[Categoria,Coleccion]
+enabled_resources=[Coleccion,Categoria]
+web_resources=[Coleccion, Categoria]

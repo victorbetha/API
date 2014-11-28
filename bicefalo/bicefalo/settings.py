@@ -41,14 +41,14 @@ INSTALLED_APPS = (
     'provider.oauth2',
     'tastypie',
     'countries',
-    'colecciones',
     'investigacion',
-    'piezas',
     'registro',
+    'piezas',
     'usuarios',
     'operaciones',
     'traslados',
     'eventos',
+    'colecciones',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -79,7 +79,7 @@ DATABASES = {
         'PORT': '3306',                      # Set to empty string for default.
     }
 }
-
+ 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
@@ -104,4 +104,3 @@ STATIC_URL = '/static/'
 
 # Security and ssl sessions
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-

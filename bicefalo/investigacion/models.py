@@ -3,14 +3,14 @@
 from django.db import models
 from piezas.models import Autor, Pieza
 from usuarios.models import Perfil
-
+import datetime
 class Investigacion(models.Model):
-    editor = models.ForeignKey(Perfil)
+    editor = models.ForeignKey(Perfil, related_name='investigaciones')
     titulo = models.CharField(max_length=45)
     contenido = models.TextField()
     resumen = models.CharField(max_length=140, blank=True)
     autor = models.ForeignKey(Autor, related_name='investigaciones')
-    fecha = models.DateField(auto_now = True)
+    fecha = models.DateField(default=datetime.date.today())
     publicado = models.BooleanField(default=True)
     piezas = models.ManyToManyField(Pieza, related_name='investigaciones')
     
@@ -21,7 +21,12 @@ class Investigacion(models.Model):
         
     def __unicode__(self):
         return unicode(self.editor) + '-' + unicode(self.titulo)   
-
+    def get_statistics(self):
+        dict = {}
+        dict['investigaciones']=Investigacion.objects.count()
+        dict['publicadas']=Investigacion.objects.filter(publicado=True).count()
+        dict['borradores']=Investigacion.objects.filter(publicado=False).count()
+        return dict
 class LinkInvestigacion(models.Model):    
     investigacion = models.ForeignKey(Investigacion, related_name='links')
     link = models.URLField()
